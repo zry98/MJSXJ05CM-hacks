@@ -2,7 +2,7 @@
   "source": "github-release-asset",
   "owner": "telmomarques",
   "repository": "runit",
-  "assetName": "runit.zip",
+  "assetName": "runit",
   "clean":
   [
     "*"

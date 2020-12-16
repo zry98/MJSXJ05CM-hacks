@@ -36,7 +36,6 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         tag : dev
-        commit : dev
         allowUpdates: true
         replacesArtifacts: true
         prerelease: true

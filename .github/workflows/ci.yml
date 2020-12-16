@@ -90,5 +90,5 @@ jobs:
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: sdcard.zip
+        name: sdcard
         path: sdcard.zip

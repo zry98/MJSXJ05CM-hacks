@@ -24,11 +24,11 @@ jobs:
     - name: Install dependencies
       run: sudo snap install jq
 
-    - name: Build (pre-release)
-      if: ${{ env.isReleaseCandidate == 'true' || (env.isReleaseCandidate == 'false' && env.isFinalRelease == 'false') }}
+    - name: Build (dev)
+      if: ${{ env.isNightly == 'true' }}
       env:
         THAT_HASH: ${{ secrets.THAT_HASH }}
-      run: chmod +x build && ./build rc
+      run: chmod +x build && ./build dev
 
     - name: Update dev tag
       if: env.isNightly == 'true'
@@ -41,6 +41,12 @@ jobs:
         replacesArtifacts: true
         prerelease: true
         artifacts: sdcard.zip
+
+    - name: Build (pre-release)
+      if: ${{ env.isReleaseCandidate == 'true' }}
+      env:
+        THAT_HASH: ${{ secrets.THAT_HASH }}
+      run: chmod +x build && ./build rc
 
     - name: Release (pre-release)
       if: env.isReleaseCandidate == 'true'

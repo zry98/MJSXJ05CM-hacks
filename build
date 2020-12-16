@@ -57,9 +57,13 @@ process_github_release_asset_download()
   local assetName=$3
   local destPath=$4
 
-  local tagName="latest"
+  local tagName="dev"
   if [ $releaseType == "rc" ]; then
     tagName="latest-rc"
+  fi
+  
+  if [ $releaseType == "final" ]; then
+    tagName="latest"
   fi
 
   echo Downloading \"${owner}/${repository}@${tagName}/${assetName}\" to \"${destPath}/$assetName\"
@@ -158,7 +162,7 @@ main()
       clean
     ;;
 
-    rc | final)
+    dev | rc | final)
       releaseType=$1
 
       clean

@@ -27,25 +27,17 @@ jobs:
         THAT_HASH: ${{ secrets.THAT_HASH }}
       run: chmod +x build && ./build dev
 
-    - name: Release (dev)
-      if: env.isNightly == 'true'
-      uses: ncipollo/release-action@v1
-      with:
-        prerelease: true
-        tag : dev
-        token: ${{ secrets.GITHUB_TOKEN }}
-        artifacts: dist/sdcard.zip
-
     - name: Update dev tag
       if: env.isNightly == 'true'
       uses: ncipollo/release-action@v1
       with:
         allowUpdates: true
-        artifacts: dist/sdcard.zip
+        name: dev
         prerelease: true
         replacesArtifacts: true
-        tag : dev
+        tag: dev
         token: ${{ secrets.GITHUB_TOKEN }}
+        artifacts: dist/sdcard.zip
 
     - name: Build (pre-release)
       if: ${{ env.isReleaseCandidate == 'true' }}

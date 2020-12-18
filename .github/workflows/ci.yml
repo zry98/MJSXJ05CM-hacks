@@ -42,7 +42,6 @@ jobs:
       with:
         allowUpdates: true
         artifacts: dist/sdcard.zip
-        commit: dev
         prerelease: true
         replacesArtifacts: true
         tag : dev

@@ -7,6 +7,24 @@ github_download_release_asset() {
   local assetName=$4
   local destPath=$5
 
+  # local query="{ \
+  #   \"query\": \" \
+  #     query { \
+  #       repository(owner:\\\"${owner}\\\" name:\\\"${repository}\\\") { \
+  #         release(tagName:\\\"${tagName}\\\") { \
+  #           releaseAssets(name:\\\"${assetName}\\\" first:1) { \
+  #             edges { \
+  #               node { \
+  #                 downloadUrl \
+  #               } \
+  #             } \
+  #           } \
+  #         } \
+  #       } \
+  #     } \
+  #   \"} \
+  # "
+  
   local query="{ \
     \"query\": \" \
       query { \
@@ -25,9 +43,10 @@ github_download_release_asset() {
     \"} \
   "
 
-  curl -s -H "Authorization: bearer $THAT_HASH" -X POST -d "${query}" https://api.github.com/graphql |
-  jq -r ".data.repository.release.releaseAssets.edges[0].node.downloadUrl" |
-  xargs wget -q --show-progress -P ${destPath}
+  # curl -s -H "Authorization: bearer $THAT_HASH" -X POST -d "${query}" https://api.github.com/graphql |
+  # jq -r ".data.repository.release.releaseAssets.edges[0].node.downloadUrl" |
+  # xargs wget -q --show-progress -P ${destPath}
+  wget https://github.com/${owner}/${repository}/releases/download/${tagName}/${assetName} -P ${destPath} 
 }
 
 download_from_url()
@@ -113,36 +132,37 @@ clean()
 {
   echo "Cleaning..."
 
-  shopt -s globstar
-  for buildFile in ./**/.build
-  do
-    local dirname=`dirname ${buildFile}`
+  # shopt -s globstar
+  # for buildFile in ./**/.build
+  # do
+  #   local dirname=`dirname ${buildFile}`
 
-    echo "Cleaning ${dirname}"
+  #   echo "Cleaning ${dirname}"
 
-    local deleteArray=(`cat ${buildFile} | jq -c ".assetName"`)
-    local deleteRules=`cat ${buildFile} | jq -c ".clean"`
+  #   local deleteArray=(`cat ${buildFile} | jq -c ".assetName"`)
+  #   local deleteRules=`cat ${buildFile} | jq -c ".clean"`
 
-    if [ ${deleteRules} != "null" ]; then
-      deleteArray=(`cat ${buildFile} | jq ".clean[]"`)
-    fi
+  #   if [ ${deleteRules} != "null" ]; then
+  #     deleteArray=(`cat ${buildFile} | jq ".clean[]"`)
+  #   fi
 
-    for file in "${deleteArray[@]}"; do
-      rm -rf ${dirname}/${file:1:-1}
-    done
+  #   for file in "${deleteArray[@]}"; do
+  #     rm -rf ${dirname}/${file:1:-1}
+  #   done
     
-  done
+  # done
 
   echo "Cleaning package"
-  rm -f sdcard.zip
+  rm -rf dist
 }
 
 build()
 {
   echo "Building..."
-
+  test -d dist || mkdir dist
+  cp -r sdcard/* dist/
   shopt -s globstar
-  for buildFile in ./**/.build
+  for buildFile in dist/**/.build
   do
     process_build_file ${buildFile}
   done
@@ -150,7 +170,9 @@ build()
 
 package()
 {
-  zip -r sdcard.zip sdcard -x sdcard/**/.build
+  pushd dist
+  zip -r sdcard.zip * -x hacks/**/.build
+  popd
 }
 
 main()

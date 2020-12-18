@@ -8,16 +8,13 @@ on:
       - '*'
 env:
   isNightly: ${{ contains(github.ref, 'dev') }}
-  isReleaseCandidate: ${{ contains(github.ref, 'tags') && contains(github.ref, '-rc') }}
-  isFinalRelease: ${{ contains(github.ref, 'tags') && !contains(github.ref, '-rc') }}
+  isReleaseCandidate: ${{ contains(github.ref, 'tags') && contains(github.ref, 'rc-') }}
+  isFinalRelease: ${{ contains(github.ref, 'tags') && contains(github.ref, 'release-') }}
 
 jobs:
-
   build:
-    name: Build
     runs-on: ubuntu-18.04
     steps:
-
     - name: Check out source code
       uses: actions/checkout@v2
 
@@ -34,12 +31,13 @@ jobs:
       if: env.isNightly == 'true'
       uses: ncipollo/release-action@v1
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        tag : dev
         allowUpdates: true
-        replacesArtifacts: true
-        prerelease: true
         artifacts: sdcard.zip
+        commit: dev
+        prerelease: true
+        replacesArtifacts: true
+        tag : dev
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build (pre-release)
       if: ${{ env.isReleaseCandidate == 'true' }}

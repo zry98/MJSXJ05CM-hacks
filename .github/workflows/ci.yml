@@ -27,12 +27,20 @@ jobs:
         THAT_HASH: ${{ secrets.THAT_HASH }}
       run: chmod +x build && ./build dev
 
+    - name: Release (dev)
+      if: env.isNightly == 'true'
+      uses: ncipollo/release-action@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        prerelease: true
+        artifacts: dist/sdcard.zip
+
     - name: Update dev tag
       if: env.isNightly == 'true'
       uses: ncipollo/release-action@v1
       with:
         allowUpdates: true
-        artifacts: sdcard.zip
+        artifacts: dist/sdcard.zip
         commit: dev
         prerelease: true
         replacesArtifacts: true
@@ -51,7 +59,7 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         prerelease: true
-        artifacts: sdcard.zip
+        artifacts: dist/sdcard.zip
         
     - name: Update latest-rc tag
       if: env.isReleaseCandidate == 'true'
@@ -62,7 +70,7 @@ jobs:
         allowUpdates: true
         replacesArtifacts: true
         prerelease: true
-        artifacts: sdcard.zip
+        artifacts: dist/sdcard.zip
 
     - name: Build (final)
       if: env.isFinalRelease == 'true'
@@ -73,7 +81,7 @@ jobs:
       uses: ncipollo/release-action@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        artifacts: sdcard.zip
+        artifacts: dist/sdcard.zip
 
     - name: Update latest tag
       if: env.isFinalRelease == 'true'
@@ -83,10 +91,10 @@ jobs:
         tag: latest
         allowUpdates: true
         replacesArtifacts: true
-        artifacts: sdcard.zip
+        artifacts: dist/sdcard.zip
 
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v1
       with:
         name: sdcard
-        path: sdcard.zip
+        path: dist/sdcard.zip

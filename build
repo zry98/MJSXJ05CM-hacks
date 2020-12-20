@@ -47,7 +47,11 @@ github_download_release_asset() {
   # jq -r ".data.repository.release.releaseAssets.edges[0].node.downloadUrl" |
   # xargs wget -q --show-progress -P ${destPath}
   pushd ${destPath} > /dev/null
-  wget -q --show-progress https://github.com/${owner}/${repository}/releases/download/${tagName}/${assetName}
+  is_200_ok=$(wget -q --show-progress --server-response https://github.com/${owner}/${repository}/releases/download/${tagName}/${assetName} 2>&1| grep -c 'HTTP/1.1 200 OK')
+  if [ $is_200_ok != "1" ]; then
+    echo "Failed to get ${assetName}"
+    exit
+  fi
   popd > /dev/null
 }
 

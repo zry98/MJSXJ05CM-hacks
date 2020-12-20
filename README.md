@@ -20,7 +20,7 @@ For now this is it, I'm working on supporting more cameras.
 
 Model Name(s) | Picture
 --- | ---
-MJSXJ02CM|![MJSXJ02CM](images/MJSXJ02CM.jpg)
+MJSXJ05CM|![MJSXJ05CM](images/MJSXJ02CM.jpg)
 
 ## Features
 ### Feature list

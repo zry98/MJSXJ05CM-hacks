@@ -24,7 +24,7 @@ github_download_release_asset() {
   #     } \
   #   \"} \
   # "
-  
+
   local query="{ \
     \"query\": \" \
       query { \
@@ -46,19 +46,19 @@ github_download_release_asset() {
   # curl -s -H "Authorization: bearer $THAT_HASH" -X POST -d "${query}" https://api.github.com/graphql |
   # jq -r ".data.repository.release.releaseAssets.edges[0].node.downloadUrl" |
   # xargs wget -q --show-progress -P ${destPath}
-  wget https://github.com/${owner}/${repository}/releases/download/${tagName}/${assetName} -P ${destPath} 
+  pushd ${destPath} > /dev/null
+  wget -q --show-progress https://github.com/${owner}/${repository}/releases/download/${tagName}/${assetName}
+  popd > /dev/null
 }
 
-download_from_url()
-{
+download_from_url() {
   local url=$1
   local destPath=$2
 
   wget -q --show-progress -O "${destPath}" ${url}
 }
 
-process_external_download()
-{
+process_external_download() {
   local url=$1
   local filename=$2
   local destPath=$3
@@ -69,18 +69,16 @@ process_external_download()
   download_from_url ${url} ${destFilename}
 }
 
-process_github_release_asset_download()
-{
+process_github_release_asset_download() {
   local owner=$1
   local repository=$2
   local assetName=$3
   local destPath=$4
 
-  local tagName="dev"
-  if [ $releaseType == "rc" ]; then
+  if [ $releaseType == "dev" ]; then
     tagName="latest-rc"
   fi
-  
+
   if [ $releaseType == "final" ]; then
     tagName="latest"
   fi
@@ -90,46 +88,56 @@ process_github_release_asset_download()
   github_download_release_asset ${owner} ${repository} ${tagName} ${assetName} ${destPath}
 }
 
-extract_zip()
-{
-  zipFile=$1
-
-  echo Extracting ${zipFile}
-
-  unzip -qq ${zipFile} -d `dirname ${zipFile}`
-  rm -f ${zipFile}
+extract() {
+  local fileType=${1}
+  local fileName=${2}
+  echo Extracting ${fileName}
+  extract_${fileType} ${fileName}
+  rm -f ${fileName}
+}
+extract_zip() {
+  unzip -qq ${1}
 }
 
-process_build_file()
-{
+extract_tar() {
+  tar -xf ${1}
+}
+
+process_build_file() {
   local buildFilePath=$1
-  local source=`cat ${buildFilePath} | jq -r ".source"`
-  local destinationPath=`dirname ${buildFilePath}`
+  local source=$(cat ${buildFilePath} | jq -r ".source")
+  local destinationPath=$(dirname ${buildFilePath})
   local assetFilename=""
-  
+
   if [ "${source}" == "external" ]; then
-    local url=`cat ${buildFilePath} | jq -r ".url"`
-    assetFilename=`cat ${buildFilePath} | jq -r ".filename"`
+    local url=$(cat ${buildFilePath} | jq -r ".url")
+    assetFilename=$(cat ${buildFilePath} | jq -r ".filename")
     process_external_download ${url} ${assetFilename} ${destinationPath}
 
   elif [ "${source}" == "github-release-asset" ]; then
-    local owner=`cat ${buildFilePath} | jq -r ".owner"`
-    local repository=`cat ${buildFilePath} | jq -r ".repository"`
-    assetFilename=`cat ${buildFilePath} | jq -r ".assetName"`
+    local owner=$(cat ${buildFilePath} | jq -r ".owner")
+    local repository=$(cat ${buildFilePath} | jq -r ".repository")
+    assetFilename=$(cat ${buildFilePath} | jq -r ".assetName")
     process_github_release_asset_download ${owner} ${repository} ${assetFilename} ${destinationPath}
   fi
 
-  if [ ! -z "${assetFilename}" ]; then
-    local assetFileExtension="${assetFilename##*.}"
-
-    if [ "${assetFileExtension}" == "zip" ]; then
-      extract_zip ${destinationPath}/${assetFilename}
-    fi
+  if [[ ! -z ${assetFilename} ]]; then
+    pushd ${destinationPath} > /dev/null
+    case "$assetFilename" in
+    *.zip)
+      extract zip ${assetFilename}
+      ;;
+    *.tar)
+      extract tar ${assetFilename}
+      ;;
+    esac
+    echo Cleaning Up ${destinationPath}
+    rm .build
+    popd > /dev/null
   fi
 }
 
-clean()
-{
+clean() {
   echo "Cleaning..."
 
   # shopt -s globstar
@@ -149,51 +157,47 @@ clean()
   #   for file in "${deleteArray[@]}"; do
   #     rm -rf ${dirname}/${file:1:-1}
   #   done
-    
+
   # done
 
   echo "Cleaning package"
   rm -rf dist
 }
 
-build()
-{
+build() {
   echo "Building..."
   test -d dist || mkdir dist
   cp -r sdcard/* dist/
   shopt -s globstar
-  for buildFile in dist/**/.build
-  do
+  for buildFile in dist/**/.build; do
     process_build_file ${buildFile}
   done
 }
 
-package()
-{
-  pushd dist
+package() {
+  pushd dist > /dev/null
   zip -r sdcard.zip * -x hacks/**/.build
-  popd
+  popd > /dev/null
 }
 
-main()
-{
+main() {
   local target=$1
 
   case ${target} in
-    clean)
-      clean
+  clean)
+    clean
     ;;
 
-    dev | rc | final)
-      releaseType=$1
+  dev | rc | final)
+    releaseType=$1
 
-      clean
-      build
-      package
+    clean
+    build
+    package
     ;;
 
-    *)
-      echo "Invalid target '${1}'"
+  *)
+    echo "Invalid target '${1}'"
     ;;
   esac
 }

@@ -16,22 +16,19 @@ jobs:
     - name: Check out source code
       uses: actions/checkout@v2
 
-    - name: Install dependencies
-      run: sudo snap install jq
-
-    - name: Build (dev)
+    - name: Build latest
       if: ${{ env.isNightly == 'true' }}
       env:
         THAT_HASH: ${{ secrets.THAT_HASH }}
       run: chmod +x build && ./build dev
 
-    - name: Build (pre-release)
+    - name: Build stable
       if: ${{ env.isFinalRelease == 'true' }}
       env:
         THAT_HASH: ${{ secrets.THAT_HASH }}
       run: chmod +x build && ./build final
 
-    - name: Release Candidate
+    - name: Release latest
       uses: marvinpinto/action-automatic-releases@latest
       if: env.isNightly == 'true'
       with:
@@ -41,7 +38,7 @@ jobs:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         title: latest-rc
 
-    - name: Release
+    - name: Release stable
       uses: marvinpinto/action-automatic-releases@latest
       if: env.isFinalRelease == 'true'
       with:

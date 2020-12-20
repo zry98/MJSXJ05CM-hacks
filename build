@@ -50,7 +50,7 @@ github_download_release_asset() {
   is_200_ok=$(wget -q --show-progress --server-response https://github.com/${owner}/${repository}/releases/download/${tagName}/${assetName} 2>&1| grep -c 'HTTP/1.1 200 OK')
   if [ $is_200_ok != "1" ]; then
     echo "Failed to get ${assetName}"
-    exit
+    exit 1
   fi
   popd > /dev/null
 }

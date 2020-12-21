@@ -122,7 +122,7 @@ build() {
 
 package() {
   pushd dist
-  zip -r sdcard_$1.zip * -x hacks/**/libc -x hacks/**/uclibc
+  zip -r sdcard.zip * -x hacks/**/libc -x hacks/**/uclibc
   popd
 }
 

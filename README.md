@@ -1,6 +1,10 @@
 [![discord](https://img.shields.io/discord/713125176971231233?label=discord)](http://discord.gg/qggupzu)
 
-# Mi Camera Hacks
+Stable: ![CI](https://github.com/cmiguelcabral/mjsxj05cm-hacks/workflows/CI/badge.svg?branch=master)
+
+Latest: ![CI](https://github.com/cmiguelcabral/mjsxj05cm-hacks/workflows/CI/badge.svg?tag=latest-rc)
+
+# Mi Camera Hacks (MJSXJ05CM)
 
 - [Supported Cameras](#supported-cameras)
 - [Features](#features)
@@ -8,8 +12,6 @@
 - [FAQ](#faq)
 - [These Guys are Awesome](#these-guys-are-awesome)
 
-# 📹 RTSP Is Here!
-![RTSP is happening](images/itshappening.gif)
 
 Keep calm and follow the procedure!
 
@@ -22,12 +24,19 @@ Model Name(s) | Picture
 --- | ---
 MJSXJ05CM|![MJSXJ05CM](images/MJSXJ02CM.jpg)
 
+
 ## Features
-### Feature list
-- RTSP Server
-- Web Configuration Interface
-- SSH Server
-- SFTP Server
+Feature | Latest | Stable
+--- | --- | ---
+Motor Control | ![C/C++ CI](https://github.com/cmiguelcabral/mjsxj05cm-motor-control/workflows/C/C++%20CI/badge.svg?tag=latest-rc) | ![C/C++ CI](https://github.com/cmiguelcabral/mjsxj05cm-motor-control/workflows/C/C++%20CI/badge.svg?branch=master)
+Onvif Server | ![C/C++ CI](https://github.com/cmiguelcabral/mjsxj05cm-onvif_srvd/workflows/C/C++%20CI/badge.svg?tag=latest-rc) | ![C/C++ CI](https://github.com/cmiguelcabral/mjsxj05cm-onvif_srvd/workflows/C/C++%20CI/badge.svg?branch=master)
+RTSP Server | ![C/C++ CI](https://github.com/cmiguelcabral/mjsxj05cm-rtsp-server/workflows/C/C++%20CI/badge.svg?tag=latest-rc)| ![C/C++ CI](https://github.com/cmiguelcabral/mjsxj05cm-rtsp-server/workflows/C/C++%20CI/badge.svg?branch=master)
+Runit | ![C/C++ CI](https://github.com/telmomarques/runit/workflows/C/C++%20CI/badge.svg?tag=latest-rc) | ![C/C++ CI](https://github.com/telmomarques/runit/workflows/C/C++%20CI/badge.svg?branch=master)
+SFTP Server | ![C/C++ CI](https://github.com/telmomarques/openssh-portable/workflows/C/C++%20CI/badge.svg?tag=latest-rc) | ![C/C++ CI](https://github.com/telmomarques/openssh-portable/workflows/C/C++%20CI/badge.svg?branch=master)
+SSH Server |![C/C++ CI](https://github.com/telmomarques/dropbear/workflows/C/C++%20CI/badge.svg?tag=latest-rc)|![C/C++ CI](https://github.com/telmomarques/dropbear/workflows/C/C++%20CI/badge.svg?branch=master)
+Web Configuration Client | ![Node.js CI](https://github.com/cmiguelcabral/mjsxj05cm-web-client/workflows/Node.js%20CI/badge.svg?tag=latest-rc) | ![Node.js CI](https://github.com/cmiguelcabral/mjsxj05cm-web-client/workflows/Node.js%20CI/badge.svg?branch=master)
+Web Configuration Server | ![Go](https://github.com/cmiguelcabral/mjsxj05cm-web-server/workflows/Go/badge.svg?tag=latest-rc)| ![Go](https://github.com/cmiguelcabral/mjsxj05cm-web-server/workflows/Go/badge.svg?branch=master)
+Websocker Stream Server | ![Go](https://github.com/cmiguelcabral/mjsxj05cm-websocket-stream-server/workflows/Go/badge.svg?tag=latest-rc)| ![Go](https://github.com/cmiguelcabral/mjsxj05cm-websocket-stream-server/workflows/Go/badge.svg?branch=master)
 
 ## Install Instructions
 The hacks exploits a flaw in firmware version 3.4.2_0062, **please read the instructions very carefully!!**

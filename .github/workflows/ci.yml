@@ -6,6 +6,7 @@ on:
       - '*'
 
 env:
+  sourceBranch: ${{ github.ref }}
   isNightly: ${{ contains(github.ref, 'dev') }}
   isFinalRelease: ${{ contains(github.ref, 'master') }}
 
@@ -15,6 +16,14 @@ jobs:
     steps:
     - name: Check out source code
       uses: actions/checkout@v2
+
+    # - name: Build
+    #   uses: dawidd6/action-ansible-playbook@v2
+    #   with:
+    #     playbook: build.yml
+    #     directory: ./
+    #     options: |
+    #       --extra-vars branch=${{ github.ref }}
 
     - name: Build latest
       if: ${{ env.isNightly == 'true' }}
@@ -42,7 +51,7 @@ jobs:
       uses: marvinpinto/action-automatic-releases@latest
       if: env.isFinalRelease == 'true'
       with:
-        automatic_release_tag: latest-rc
+        automatic_release_tag: stable
         files: dist/sdcard.zip
         prerelease: false
         repo_token: "${{ secrets.GITHUB_TOKEN }}"

@@ -98,3 +98,4 @@ Huge thanks to everyone who contributed!
 [@aslafy-z](https://github.com/aslafy-z)
 [@crckmc](https://github.com/crckmc)
 [@thewh1teagle](https://github.com/thewh1teagle)
+[@telmomarques](https://github.com/telmomarques)

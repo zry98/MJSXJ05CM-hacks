@@ -1,0 +1,18 @@
+#!/bin/sh
+
+CONFIG_FILE="/mnt/data/config/rtsp.json"
+MAINSTREAM_PIPE="/var/run/rtsp_mainstream"
+SUBSTREAM_PIPE="/var/run/rtsp_substream"
+
+exec 2>&1
+. ../.common/rc.main
+
+## start target:
+start() {
+  echo "start RTSP server"
+
+  # exec rtspserver -c ${CONFIG_FILE} -m ${MAINSTREAM_PIPE} -s ${SUBSTREAM_PIPE}
+  exec rtspserver -c ${CONFIG_FILE} -m ${MAINSTREAM_PIPE}
+}
+
+eval ${TARGET} "$@"

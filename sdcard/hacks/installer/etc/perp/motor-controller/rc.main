@@ -1,0 +1,19 @@
+#!/bin/sh
+
+POSITION_FILE="/mnt/data/config/position"
+
+exec 2>&1
+. ../.common/rc.main
+
+## start target:
+start() {
+  echo "start motor controller daemon"
+
+  cd /var/run
+  [ ! -f ${POSITION_FILE} ] && echo "0 0 " > ${POSITION_FILE}
+  ln -sf ${POSITION_FILE} /var/run/position
+
+  exec motord
+}
+
+eval ${TARGET} "$@"

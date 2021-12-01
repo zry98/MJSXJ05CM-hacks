@@ -1,0 +1,40 @@
+#!/bin/sh
+
+STEPS=5
+EVENT_FILE="/var/run/event"
+LEFT="echo \"pan forward ${STEPS}\" > ${EVENT_FILE}"
+RIGHT="echo \"pan reverse ${STEPS}\" > ${EVENT_FILE}"
+UP="echo \"tilt forward ${STEPS}\" > ${EVENT_FILE}"
+DOWN="echo \"tilt reverse ${STEPS}\" > ${EVENT_FILE}"
+
+PID_FILE="/var/run/onvif_srvd.pid"
+
+exec 2>&1
+. ../.common/rc.main
+
+## start target:
+start() {
+  echo "start onvif server"
+
+  # load config
+  . /mnt/data/config/config.sh
+
+  # get IP address
+  IP_ADDR=$(ip -4 addr show wlan0 | grep inet | awk '{print $2}' | cut -d'/' -f1)
+  while [[ -z $IP_ADDR ]]; do
+    IP_ADDR=$(ip -4 addr show wlan0 | grep inet | awk '{print $2}' | cut -d'/' -f1)
+    sleep 0.1
+  done
+
+  RTSP_URL="rtsp://${IP_ADDR}:8554/mainstream"
+  ONVIF_PROFILE_0="--name HD --width 1920 --height 1080 --url ${RTSP_URL} --type H264"
+
+  exec onvif_srvd --no_fork --pid_file ${PID_FILE} \
+    --manufacturer ${ONVIF_MANUFACTURER} --model ${ONVIF_MODEL} \
+    --ifs wlan0 --port ${ONVIF_PORT} \
+    --user ${ONVIF_USERNAME} --password ${ONVIF_PASSWORD} \
+    --scope onvif://www.onvif.org/Profile/S ${ONVIF_PROFILE_0} \
+    --ptz --move_left "eval ${LEFT}" --move_right "eval ${RIGHT}" --move_up "eval ${UP}" --move_down "eval ${DOWN}"
+}
+
+eval ${TARGET} "$@"

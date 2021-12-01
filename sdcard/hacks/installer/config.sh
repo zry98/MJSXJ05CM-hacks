@@ -1,0 +1,19 @@
+# shellcheck disable=SC2034
+
+WIFI_SSID="FBI_Surveillance_Van"
+WIFI_SECURITY="WPA" # same for WPA2
+WIFI_PASSWORD="!s3cr3t"
+
+TIMEZONE="Europe/Madrid"
+LED_INDICATOR="off"
+FULL_COLOR="off"
+NIGHT_VISION="auto"
+WDR="on"
+WATERMARK="on"
+VIDEO_FLIP="off"
+
+ONVIF_PORT="5000"
+ONVIF_USERNAME="admin"
+ONVIF_PASSWORD="!s3cr3t"
+ONVIF_MANUFACTURER="Xiaomi"
+ONVIF_MODEL="MJSXJ05CM"

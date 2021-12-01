@@ -1,0 +1,20 @@
+#!/bin/sh
+
+MAINSTREAM_PIPE="/var/run/rtsp_mainstream"
+SUBSTREAM_PIPE="/var/run/rtsp_substream"
+
+exec 2>&1
+. ../.common/rc.main
+
+## start target:
+start() {
+  echo "start framegrabber"
+
+  rm -f ${MAINSTREAM_PIPE} && mkfifo ${MAINSTREAM_PIPE}
+  rm -f ${SUBSTREAM_PIPE} && mkfifo ${SUBSTREAM_PIPE}
+
+  # exec framegrabber -f ${MAINSTREAM_PIPE} -c 0 -f ${SUBSTREAM_PIPE} -c 1
+  exec framegrabber -f ${MAINSTREAM_PIPE} -c 0
+}
+
+eval ${TARGET} "$@"

@@ -3,6 +3,7 @@
   "owner": "telmomarques",
   "repository": "mija-framegrabber",
   "assetName": "framegrabber.zip",
+  "type": "dev",
   "clean":
   [
     "ipc009"

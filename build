@@ -14,10 +14,11 @@ github_download_release_asset() {
 }
 
 download_from_url() {
-  local assetName=$1
-  is_200_ok=$(wget -q --show-progress --server-response ${1} 2>&1 | grep -c 'HTTP/1.1 200 OK')
+  local url=$1
+  local filename=$2
+  is_200_ok=$(wget -q --show-progress --server-response -O ${filename} ${url} 2>&1 | grep -c 'HTTP/1.1 200 OK')
   if [ $is_200_ok != "1" ]; then
-    echo "Failed to get ${assetName}"
+    echo "Failed to get ${url}"
     exit 1
   fi
 }
@@ -28,19 +29,20 @@ process_external_download() {
 
   echo Downloading \"${url}\"
 
-  download_from_url ${url}
+  download_from_url ${url} ${filename}
 }
 
 process_github_release_asset_download() {
   local owner=$1
   local repository=$2
   local assetName=$3
+  local buildType=$4
 
-  if [ $releaseType == "dev" ]; then
+  if [ $buildType == "dev" ]; then
     tagName="latest-rc"
   fi
 
-  if [ $releaseType == "final" ]; then
+  if [ $buildType == "final" ]; then
     tagName="latest"
   fi
 
@@ -88,7 +90,8 @@ process_build_file() {
     local owner=$(cat ${buildFilePath} | jq -r ".owner")
     local repository=$(cat ${buildFilePath} | jq -r ".repository")
     assetFilename=$(cat ${buildFilePath} | jq -r ".assetName")
-    process_github_release_asset_download ${owner} ${repository} ${assetFilename}
+    buildType=$(cat ${buildFilePath} | jq -r ".type")
+    process_github_release_asset_download ${owner} ${repository} ${assetFilename} ${buildType}
   fi
 
   rm $buildFilePath

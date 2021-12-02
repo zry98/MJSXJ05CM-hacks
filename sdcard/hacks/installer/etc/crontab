@@ -1,0 +1,6 @@
+# environment variables
+SHELL=/bin/sh
+PATH=/mnt/data/bin:/sbin:/bin:/usr/sbin:/usr/bin
+# RANDOM_DELAY=60 //busybox cron seems not support this
+
+# min hour day_of_month month day_of_week command

@@ -86,7 +86,7 @@ else
 fi
 
 # remount data block
-#cat ${DATA_BLOCK} >data.bin && log "Data block backed up"
+cat ${DATA_BLOCK} >data.bin && log "Data block backed up"
 mount -a
 
 # check if data block is remounted
@@ -124,6 +124,9 @@ mkdir -p /mnt/data/config
 echo "0 0 " >/mnt/data/config/position
 cp -f /mnt/sdcard/hacks/rtsp-server/config/config.json /mnt/data/config/rtsp.json
 cp -f ${CONFIG_FILE} ${PERSISTENT_CONFIG_FILE}
+
+# clear crontab
+cp -f /mnt/sdcard/hacks/installer/etc/crontab /mnt/data/etc/crontab
 
 # set timezone
 ln -sf /usr/share/zoneinfo/${TIMEZONE} /mnt/data/etc/TZ

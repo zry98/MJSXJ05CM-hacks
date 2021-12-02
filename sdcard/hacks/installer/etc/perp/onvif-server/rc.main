@@ -27,13 +27,13 @@ start() {
   done
 
   RTSP_URL="rtsp://${IP_ADDR}:8554/mainstream"
-  ONVIF_PROFILE_0="--name HD --width 1920 --height 1080 --url ${RTSP_URL} --type H264"
+  ONVIF_PROFILE_0="--name RTSP --width 1920 --height 1080 --url ${RTSP_URL} --type H264"
 
   exec onvif_srvd --no_fork --pid_file ${PID_FILE} \
-    --manufacturer ${ONVIF_MANUFACTURER} --model ${ONVIF_MODEL} \
-    --ifs wlan0 --port ${ONVIF_PORT} \
-    --user ${ONVIF_USERNAME} --password ${ONVIF_PASSWORD} \
     --scope onvif://www.onvif.org/Profile/S ${ONVIF_PROFILE_0} \
+    --ifs wlan0 --port ${ONVIF_PORT} \
+    --manufacturer ${ONVIF_MANUFACTURER} --model ${ONVIF_MODEL} \
+    --user ${ONVIF_USERNAME} --password ${ONVIF_PASSWORD} \
     --ptz --move_left "eval ${LEFT}" --move_right "eval ${RIGHT}" --move_up "eval ${UP}" --move_down "eval ${DOWN}"
 }
 

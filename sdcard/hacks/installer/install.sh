@@ -70,7 +70,7 @@ perpctl X mortox && log "mortox service stopped" || die "Can't stop mortox servi
 sleep 5
 rm -f /var/run/perp/perp*
 # stop remaining services using data block
-killall -9 wpa_supplicant hostapd dhcpd ntpd
+killall -9 wpa_supplicant hostapd dhcpd ntpd wpa_cli miio_cloud
 
 # unmount data block and later remount it back to make sure no process is still using it
 for _ in $(seq 10); do

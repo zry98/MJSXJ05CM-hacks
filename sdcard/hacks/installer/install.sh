@@ -3,11 +3,12 @@
 
 CONFIG_FILE="/mnt/sdcard/hacks/installer/config.sh"
 PERSISTENT_CONFIG_FILE="/mnt/data/config/config.sh"
-LOG_FILE="/mnt/sdcard/hacks/installer/installer.log"
+LOG_FILE="/mnt/sdcard/log/hack_installer.log"
 DATA_BLOCK="/dev/mtdblock3"
 CONFIG_BLOCK="/dev/mtdblock4"
 
 # redirect stdout and stderr to the log file
+mkdir -p /mnt/sdcard/log
 exec 1>>${LOG_FILE}
 exec 2>&1
 
@@ -70,7 +71,12 @@ perpctl X mortox && log "mortox service stopped" || die "Can't stop mortox servi
 sleep 5
 rm -f /var/run/perp/perp*
 # stop remaining services using data block
-killall -9 wpa_supplicant hostapd dhcpd ntpd wpa_cli miio_cloud
+killall -9 wpa_supplicant hostapd dhcpd ntpd miio_cloud wpa_cli
+kill -9 $(lsof | grep "/mnt/data" | awk '{print $1}')
+
+# for debugging
+ps aux >> ${LOG_FILE}
+lsof >> ${LOG_FILE}
 
 # unmount data block and later remount it back to make sure no process is still using it
 for _ in $(seq 10); do
